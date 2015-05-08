@@ -1,0 +1,122 @@
+Google 1gram: (Question 1)
+
+1.	For each year available, plot the total number of words used. Year on the x-axis, total words on y-axis.
+Description:
+An n-gram is a neighboring sequence of n items (syllables, letters, words) from a given sequence of text or speech.
+The file format is as follows: 
+ngram TAB year TAB match_count TAB volume_count NEWLINE
+For this question, we were supposed to find the total number of words used for each year and plot a graph between them.
+Analysis method: 
+We used PigLatin to analyze the data and get the result. The steps are as follows:
+Step 1: Import data from the dataset using ‘LOAD’ command.
+Step 2: As we need the answer based on year, GROUP the imported data by year.
+Step3: The ultimate goal is to find the total number of words used. So we used the SUM function to get the total frequencies for a particular year, which is equivalent to total number of words in that year.
+Result plot:
+ 
+Twitter: (Question 1 and 2 in Hive and 3rd in Pig)
+2.	What hour of the day does @PrezOno’s tweet the most on average, using every day we have twitter data? Include a plot of the expected number of tweets for each hour of the day, for those he did tweet. For example if Ono tweeted once every day at 12:30PM, his expected number of tweets between 12 and 1 would be If he alternates between 2 and 3 tweets per day, his average would be 2.5. 
+
+Data set was taken from ‘2014-05-01’ to ‘ 2014-12-25’ .
+We were supposed to find the average number of tweets per day.
+Analysis:
+The twitter data is available in json format. Initially we loaded the twitter data into table called rawtweets. This table still has every data in json format. Each of the fields can be extracted from the twitter data using get_json_object. We selected the user’s screen name, hour from created_at information using get_json_object  method. 
+get_json_object(rawtweets.data,"$.created_at") gives the data and time information of the tweet. Hence I have appended the above command with unix time stamp commands to extract the hour from the date time information. from_unixtime(unix_timestamp(get_json_object(rawtweets.data,"$.created_at"), "EEE MMM dd hh:mm:ss Z yyyy"), 'hh')
+The next step is to use group by the data over the hour of the day field and get the count of the number of tweets.  This gave us the following results : 
+Result:
+24	23	22	21	20	19	18	16	15	14	13	12	11	10	9	8	7	6	5	4	3	2	1
+252	340	396	496	409	443	287	117	81	74	39	78	182	131	70	41	55	198	44	174	216	190	235
+
+Since there are 224 days in the entire dataset, therefore the average number of tweets for each hour of the day are:
+24	23	22	21	20	19	18	16	15	14	13	12	11	10	9	8	7	6	5	4	3	2	1
+1.13	1.52	1.77	2.21	1.83	1.98	1.28	0.52	0.36	0.33	0.17	0.35	0.81	0.58	0.31	0.18	0.24	0.88	0.20	0.78	0.96	0.84	1.05
+
+ 
+
+
+3.	What day of the week does @PrezOno tweet the most on average? Use the same example as in #1 but for days of the week.
+
+
+Analysis:
+Initially we loaded the twitter data into a  table called rawtweets.  The data in the table is  in json format. Each of the fields can be extracted from the twitter data using get_json_object. We selected the user’s screen name, day of week  from created_at information  using get_json_object  method. 
+get_json_object(rawtweets.data,"$.created_at") gives the data and time information of the tweet. Hence I have appended the above command with unix time stamp commands to extract the day of week information from the date time information. from_unixtime(unix_timestamp(get_json_object(rawtweets.data,"$.created_at"), "EEE MMM dd hh:mm:ss Z yyyy"), 'EEE')
+The next step is to use group by the data over the  day of the week  field and get the count of the number of tweets.  This gave us the following results: 
+Result:
+Mon	Tue	Wed	Thu	Fri	Sat	Sun
+591	631	829	807	684	698	677
+Since there are 32 weeks in the entire dataset, therefore the average number of tweets for each day of the week is:
+Mon	Tue	Wed	Thu	Fri	Sat	Sun
+18.46875	19.71875	25.90625	25.21875	21.375	21.8125	21.15625
+
+“PrezOno” average tweets count is most on Wednesday over the given data set. 
+ 
+
+
+4.	How does @PrezOno’s tweet length compare to the average of all others? What is his average length? All others?
+For this question, we were supposed to find the average length and compare the tweet length of @PrezOno’s to the average of others.
+We have used PigLatin to implement this question.
+Analysis:
+Steps:
+1.	Initially, the length of tweet is calculated using SIZE command for each user. 
+2.	Then the AVG function is used to find the average of those
+3.	Dump the average obtained. 
+4.	Then filter the data by id using FILTER function to find PrezOno’s tweet length average.
+5.	Dump the average obtained for PrezOno.
+.
+Result:
+85.0
+78.0
+Thus, average tweet length of @PrezOno(78.0) is lesser when compared to all the other tweeters.
+
+5.   Twitter Q4 - Data set taken from  ‘2014-05-01’ to  ‘ 2014-12-25’
+Initially we loaded the twitter data into a  table called rawtweets.  The data in the table is  in json format. Each of the fields can be extracted from the twitter data using get_json_object.
+We get the length of each text of twitter and  sum it over each hour of day. We also divide it with the count of tweets in that hour of the day which gives us  the average length of the tweets.
+select sum(length(get_json_object(rawtweets.data,"$.text")))/count(*) , from_unixtime(unix_timestamp(get_json_object(rawtweets.data,"$.created_at"), "EEE MMM dd hh:mm:ss Z yyyy"), 'hh') as hh    from rawtweets group by from_unixtime(unix_timestamp(get_json_object(rawtweets.data,"$.created_at"), "EEE MMM dd hh:mm:ss Z yyyy"), 'hh')   ;
+ 
+1	57.35
+2	56.55
+3	58.69
+4	59.82
+5	61.57
+6	61.82
+7	61.44
+8	58.86
+9	59.4
+10	90.08
+11	59.25
+12	57.45
+13	80.43
+14	72.82
+15	42.78
+16	107.27
+17	67.88
+18	60.086
+19	55.78
+20	62.21
+21	44.76
+22	66.89
+23	77.01
+24	71.54
+
+
+
+6. Wikipedia 1st question:
+
+The solution is in four steps:
+•	We find out the largest article
+•	We find out the smallest article
+•	We find out the percentage of each of the letters
+•	We get the most appearing 5 words from the articles
+The data set has been reduced to contain only 200 files. The results are based out of these data sources.
+The code to find the largest article:
+•	wiki_raw = load '/home/phani/data/wikipedia/' as (raw:chararray)
+•	wiki_count = foreach wiki_raw generate SUBSTRING(raw,0,INDEXOF(raw,'::::::',0)) as title, SIZE(raw) as size;
+•	sorted_desc = ORDER wiki_count BY size DESC;
+•	sorted_dlimit = LIMIT sorted_desc 1;
+•	dump sorted_dlimit;
+In the above code we pick out the title of the article and the size of each article. The list is then sorted in the descending order and the top record is picked.
+Result:
+The result was: (Wikipedia:Upload log archive/December 2003, 58765)
+
+
+
+ 

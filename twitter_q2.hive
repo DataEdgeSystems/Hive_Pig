@@ -1,0 +1,2 @@
+
+select get_json_object(rawtweets.data,"$.user.screen_name") as scr_name, from_unixtime(unix_timestamp(get_json_object(rawtweets.data,"$.created_at"), "EEE MMM dd hh:mm:ss Z yyyy"), 'EEE') as day , count(*) from rawtweets where get_json_object(rawtweets.data,"$.user.screen_name") == 'PrezOno' group by from_unixtime(unix_timestamp(get_json_object(rawtweets.data,"$.created_at"), "EEE MMM dd hh:mm:ss Z yyyy"), 'EEE'),get_json_object(rawtweets.data,"$.user.screen_name");

@@ -1,0 +1,4 @@
+data= load '/data/1gram/' as (word: chararray, year:int, pg_count:int, vol_count:int);
+fil= group data by year;
+count = foreach fil generate COUNT(data.pg_count), group;
+dump count;

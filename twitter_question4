@@ -1,0 +1,1 @@
+select sum(length(get_json_object(rawtweets.data,"$.text")))/count(*) , from_unixtime(unix_timestamp(get_json_object(rawtweets.data,"$.created_at"), "EEE MMM dd hh:mm:ss Z yyyy"), 'hh') as hh    from rawtweets group by from_unixtime(unix_timestamp(get_json_object(rawtweets.data,"$.created_at"), "EEE MMM dd hh:mm:ss Z yyyy"), 'hh')   ;

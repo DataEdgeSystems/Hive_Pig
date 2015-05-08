@@ -1,0 +1,21 @@
+tweet_raw = load '/home/kannegsa/Desktop/twitterdata' as (raw: chararray);
+
+tweets =foreach tweet_raw generate REGEX_EXTRACT(raw, 'created_at":"([^"]+)"',1) as created_at,REGEX_EXTRACT(raw, 'created_at":"([^ ]+) ',1) as wday,REGEX_EXTRACT(raw, ' (\\d\\d):\\d\\d:\\d\\d',1) as hday, REGEX_EXTRACT(raw, '"text":"([^"]+)"',1) as text, REGEX_EXTRACT(raw, '"id_str":"(\\d+)","name"',1) as id;
+
+size_all = foreach tweets generate $0 as tweeter_id, SIZE(text) as size;
+
+grouped = group size_all all;
+
+avg_all = foreach grouped generate AVG(size_all.size);
+
+dump avg_all;
+
+prezono = filter tweets by id=='211178363';
+
+size_ono = foreach sizepo generate $0 as ono_id, SIZE(text) as size;
+
+grouped = group size_ono all;
+
+avg_ono = foreach grouped generate AVG(size_ono.size);
+
+dump avg_ono;
